@@ -46,7 +46,7 @@
 #		- changed STY to utdiss2-05.sty.
 #
 
-DISS="./disstemplate"	# Change this to the name of your
+DISS="./mlinder_report"	# Change this to the name of your
 			# dissertation file.
 
 STY="utdiss2-05.sty"
