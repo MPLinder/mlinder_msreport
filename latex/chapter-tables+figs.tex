@@ -98,8 +98,8 @@ figure contained in an encapsulated PostScript file.
 \index{PostScript}%
 \index{encapsulated PostScript}%
 In order to use it, it is necessary to include the 
-command \cn{usepackage\{psfig\}} 
-\index{psfig}%
+command \cn{usepackage\{graphicx\}} 
+\index{graphicx}%
 at the beginning of the document.
 
 \begin{figure}[htb] % Imported eps example.
@@ -114,7 +114,7 @@ You can see the commands that generated this
 figure in the source file. Look for the line
 \cn{begin\{figure\}[htb] \% Imported eps example. }
 
-The command that imports the file is \cn{psfig}, and it also 
+The command that imports the file is \cn{includegraphics}, and it also 
 controls its size (\texttt{height} and \texttt{width}), and 
 can rotate the figure (\texttt{angle}).
 
