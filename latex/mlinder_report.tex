@@ -29,7 +29,7 @@
 \usepackage{graphicx}         	% Allows inclusion of eps files.
 \usepackage{citesort}         % 
 \usepackage{url}		% Allows good typesetting of web URLs.
-%\usepackage{draftcopy}		% Uncomment this line to have the
+\usepackage{draftwatermark}		% Uncomment this line to have the
 				% word, "DRAFT," as a background
 				% "watermark" on all of the pages of
 				% of your draft versions. When ready
@@ -37,12 +37,13 @@
 				% it out with a percent sign to remove
 				% the word draft before you re-run
 				% Makediss for the last time.
+\SetWatermarkScale{4}
 
 \author{Michael Linder}  	% Required
 
 \address{mplinder@utexas.edu}  % Required
 
-\title{TODO: TITLE HERE}
+\title{Honeycomb: Location tracking based on Wi-Fi signal strength}
                                                     % Required
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,14 +262,14 @@
 %
 \begin{dedication}
 \index{Dedication@\emph{Dedication}}%
-TODO: DEDICATION
+Dedicated to my wife, Dana, whose support made this possible.
 \end{dedication}
 
 
-\begin{acknowledgments}		% Optional
-\index{Acknowledgments@\emph{Acknowledgments}}%
-TODO: ACKNOWLEDGMENTS \ldots
-\end{acknowledgments}
+% \begin{acknowledgments}		% Optional
+% \index{Acknowledgments@\emph{Acknowledgments}}%
+% TODO: ACKNOWLEDGMENTS \ldots
+% \end{acknowledgments}
 
 
 % The abstract is required. Note the use of ``utabstract'' instead of
@@ -279,7 +280,11 @@ TODO: ACKNOWLEDGMENTS \ldots
 \utabstract
 \index{Abstract}%
 \indent
-TODO: ABSTRACT
+This paper presents Honeycomb, a commercially viable location tracking system based on Wi-Fi signal strength. Wireless Local Area Networks are ubiquitous today, which makes them a perfect preexisting infrastructure for localized location tracking. Using Wi-Fi signal strength fingerprinting, Honeycomb harnesses existing Wi-Fi infrastructures as a means to track the movements of individual nodes through a space. Fingerprinting is a method by which Wi-Fi signal strengths are mapped at regular intervals in a bounded space. Once a space is fingerprinted, a given node must simply sample Wi-Fi signal strengths as it moves through the same space and Honeycomb's algorithm will determine the node's path in an offline manner.
+
+Get references to chapters like this:
+
+\ref{introduction}
 
 
 
@@ -306,15 +311,15 @@ TODO: ABSTRACT
 %
 \include{chapter-introduction}
 
-\include{chapter-instructions}
+\include{chapter-related}
 
-\include{chapter-howtouse}
+\include{chapter-bumblebee}
 
-\include{chapter-makingbib}
+\include{chapter-tech-overview}
 
-\include{chapter-tables+figs}
+\include{chapter-results}
 
-\include{chapter-math}
+\include{chapter-discussion}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -324,14 +329,14 @@ TODO: ABSTRACT
 % If you have only one appendix, use the command \appendix instead
 % of \appendices.
 %
-\appendices
-\index{Appendices@\emph{Appendices}}%
+%\appendices
+%\index{Appendices@\emph{Appendices}}%
 
-\include{chapter-appendix1}
+%\include{chapter-appendix1}
 
-\include{chapter-appendix2}
+%\include{chapter-appendix2}
 
-\include{chapter-appendix3}
+%\include{chapter-appendix3}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
