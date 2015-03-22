@@ -3,20 +3,120 @@
 \index{Background and Related Work%
 @\emph{Background and Related Work}}%
 
-\section{Signal Strenth vs. RSSI}
-\index{Signal Strenth vs. RSSI@\emph{Signal Strenth vs. RSSI}}%
+Several key decisions were made in designing Honeycomb. Chief among these were the basing of our location estimation system on Wi-Fi signal strength, the fingerprinting of the space, and the subsequent offline location estimation algorightm. In this section, we review the state of Wi-Fi location estimation and explain why we made the choices that we made. 
 
+\section{High Level Location Estimation Schemes}
+\index{High Level Location Estimation Schemes@\emph{High Level Location Estimation Schemes}}%
+
+Liu \cite{liu2007survey} categorizes three high level location estimation schemes: triangulation, proximity, and scene analysis. In triangulation schemes, nodes are tracked based on the time of arrival (TOA) or roundtrip time of flight (RTOF) if Wi-Fi signals. These methods, while potentially extremely precise, require knowledge of the locations of access points themselves, as well as the distances between them. We consider the near plug-and-play ability of Honeycomb to be a benefit to its adopters, and thus consider this requirement to be a significant blocker to adoption.  Additionally, in order to gather precise TOA and RTOF measurements, a line of sight must be maintained between the access point and the mobile node, which is not possible in the scenarios in which we expect Honeycomb to be deployed. Thus triangulation schemes were rejected immediately. 
+
+Proximity schemes generally consist of a dense array of antennas which are capable of detecting mobile nodes, and the location of the mobile node is considered to be whichever antenna detects it. These schemes thus require a lot of extra infrastructure, which we believe would be a barrier to entry for Honeycomb's expected customers. Additionally, these schemes require the mobile node to send out a beacon for the antenna to detect, which we consider to put the mobile node carrier's security and privacy in jeopardy. 
+	
+Thus we are left with scene analysis schemes. Scene analysis schemes generally consist of two phases: a training phase and an estimation phase. In the training phase the location is mapped, usually via fingerprinting, and in the estimation phase a node gathers its own measurements which are then compared to the fingerprints. There are many methods for doing this comparison, which we will discuss in later sections. While scene analysis schemes are not without their own overhead, they are far preferable to both triangulation schemes and proximity schemes for Honeycomb's intended uses. For these reasons, we chose a scene analysis scheme, which we will describe further here.
+	
+
+\section{Deterministic and Probabilistic Approaches}
+\index{Deterministic and Probabilistic Approaches@\emph{Deterministic and Probabilistic Approaches}}%
+
+Scene analysis schemes can be generally divided into two categories: probabilistic and deterministic approaches. 
+
+
+
+
+Both types can require a map as a training phase, but Probabilistic approaches often require knowledge of location of access points. 
+Probabalistic Approaches are more computationally intensive
+Most approaches require division of the space into equal cells, but mine doesn't. You can put the points anywhere you want them for the amount of accuracy you want. 
+
+Probabilistic:
+\cite{ito2005bayesian}
+\cite{seshadri2005bayesian}
+\cite{hotta2012robust}
+
+Deterministic:
+\cite{arias2004malguki}
+\cite{quan2010wi}
+\cite{nagaosa2012dept}
+
+Unsure, but need to cite:
+\cite{priyantha2005cricket}
+\cite{xiong2012towards}
+\cite{xiong2013arraytrack}
+\cite{bahl2000enhancements}
+\cite{bahl2000radar}
+\cite{turner2011empirical}
+
+ 
+ 
 \section{Fingerprinting}
 \index{Fingerprinting@\emph{Fingerprinting}}%
 
-\section{Existing Research}
-\index{Existing Research@\emph{Existing Research}}%\
-
-what does fingerprinting even mean?
+Define again.
+Why choose this method?
 something here about density of fingerprints
-real time vs. offline and why I chose offline
-	offline is more secure (and less creepy) 
-benefits and drawbacks of fingerprinting vs algorithmic determinations:
+Benefits and drawbacks:
 	fingerprinting requires a map
 	algorithmic determinations require knowledge of distances between access points, which is harder to get than a fingerprint map, and is not as forgiving of signals bouncing off stuff
+
+\section{Offline Location Estimation}
+\index{Existing Research@\emph{Existing Research}}%\
+
+As opposed to real time
+offline is more secure (and less creepy) 
+
+
+
+
+
+Overview:
+\cite{liu2007survey}
+	Three typical location estimation schemes: triangulation, scene analysis, and proximity
+	
+	Triangulation:
+		requires knowledge of location of access points, which is more complicated and less "plug and play". 
+		Relies on Time Of Arrival or Roundtrip Time Of Flight
+		Requires Line Of Sight
+		Suffers from the multipath effect, due to reflection of signals
+		Much more computationally intensive.
+		
+	Scene Analysis
+		requires knowledge of the scene (fingerprinting)
+		two phases: training and estimation (actually calls them "offline" and "online" but eff that)
+		"There are at least five location fingerprinting-based positioning algorithms using pattern recognition technique so far: probabilistic methods, Formula-nearest-neighbor (Formula NN), neural networks, support vector machine (SVM), and smallest M-vertex polygon (SMP)."
+		For probabilistic methods, see below
+		
+	Proximity:
+		dense grid of antennas, mobile node is collocated with the one that detects it
+
+
+
+\cite{ito2005bayesian}
+	probabilistic in nature
+	estimation is done on the device, specifically to keep the data out of the hands of third parties. (not suitable for our purposes)
+	uses pre-observation
+	
+	
+\cite{seshadri2005bayesian}
+	training phase and estimation phase
+	requires training by making a map of wifi signal strenghts throughout the space (just like mine)
+	more computationally intensive
+	
+
+
+\cite{hotta2012robust}
+
+
+\cite{arias2004malguki}
+\cite{quan2010wi}
+\cite{nagaosa2012dept}
+
+
+\cite{priyantha2005cricket}
+\cite{xiong2012towards}
+\cite{xiong2013arraytrack}
+\cite{bahl2000enhancements}
+\cite{bahl2000radar}
+\cite{turner2011empirical}
+
+
+	
 	
