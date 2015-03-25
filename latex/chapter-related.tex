@@ -3,120 +3,48 @@
 \index{Background and Related Work%
 @\emph{Background and Related Work}}%
 
-Several key decisions were made in designing Honeycomb. Chief among these were the basing of our location estimation system on Wi-Fi signal strength, the fingerprinting of the space, and the subsequent offline location estimation algorightm. In this section, we review the state of Wi-Fi location estimation and explain why we made the choices that we made. 
+Several key decisions were made in designing Honeycomb. Chief among these were the basing of our location estimation system on Wi-Fi signal strength, the fingerprinting of the space, and the subsequent offline location estimation algorithm. Our choice to base our system on Wi-Fi signal strength was an easy one. Systems based on RFID \cite{toplan2012rfid}, ultrasound \cite{priyantha2005cricket}, or geomagnetism \cite{chung2011indoor} require single purpose hardware, and can be costly to install, and were thus rejected outright. In this section, we review the state of Wi-Fi location estimation and explain why we made the choices that we made. 
 
 \section{High Level Location Estimation Schemes}
 \index{High Level Location Estimation Schemes@\emph{High Level Location Estimation Schemes}}%
 
-Liu \cite{liu2007survey} categorizes three high level location estimation schemes: triangulation, proximity, and scene analysis. In triangulation schemes, nodes are tracked based on the time of arrival (TOA) or roundtrip time of flight (RTOF) if Wi-Fi signals. These methods, while potentially extremely precise, require knowledge of the locations of access points themselves, as well as the distances between them. We consider the near plug-and-play ability of Honeycomb to be a benefit to its adopters, and thus consider this requirement to be a significant blocker to adoption.  Additionally, in order to gather precise TOA and RTOF measurements, a line of sight must be maintained between the access point and the mobile node, which is not possible in the scenarios in which we expect Honeycomb to be deployed. Thus triangulation schemes were rejected immediately. 
+Liu \cite{liu2007survey} categorizes three high level location estimation schemes: triangulation, proximity, and scene analysis. 
 
-Proximity schemes generally consist of a dense array of antennas which are capable of detecting mobile nodes, and the location of the mobile node is considered to be whichever antenna detects it. These schemes thus require a lot of extra infrastructure, which we believe would be a barrier to entry for Honeycomb's expected customers. Additionally, these schemes require the mobile node to send out a beacon for the antenna to detect, which we consider to put the mobile node carrier's security and privacy in jeopardy. 
+\subsection{Triangulation} In triangulation schemes, like \cite{xiong2013arraytrack} and \cite{xiong2012towards}, nodes are tracked based on the time of arrival (TOA), angle of arrival (AOA) or roundtrip time of flight (RTOF) of Wi-Fi signals. These methods, while potentially extremely precise, require knowledge of the locations of access points themselves, as well as the distances between them. We consider the near plug-and-play ability of Honeycomb to be a benefit to its adopters, and thus consider this requirement to be a significant blocker to adoption.  Additionally, in order to gather precise TOA, AOA, and RTOF measurements, a line of sight must be maintained between the access point and the mobile node, which is not possible in the scenarios in which we expect Honeycomb to be deployed. Thus triangulation schemes were rejected immediately. 
+
+\subsection{Proximity} Proximity schemes, like \cite{blumrosen2010continuous}, generally consist of a dense array of antennas which are capable of detecting mobile nodes, and the location of the mobile node is considered to be whichever antenna detects it. These schemes thus require significant extra infrastructure, which we believe would be a barrier to entry for Honeycomb's expected customers. Additionally, these schemes require the mobile node to send out a beacon for the antenna to detect, which we consider to put the mobile node carrier's security and privacy at risk. 
 	
-Thus we are left with scene analysis schemes. Scene analysis schemes generally consist of two phases: a training phase and an estimation phase. In the training phase the location is mapped, usually via fingerprinting, and in the estimation phase a node gathers its own measurements which are then compared to the fingerprints. There are many methods for doing this comparison, which we will discuss in later sections. While scene analysis schemes are not without their own overhead, they are far preferable to both triangulation schemes and proximity schemes for Honeycomb's intended uses. For these reasons, we chose a scene analysis scheme, which we will describe further here.
+\subsection{Scene Analysis} Thus we are left with scene analysis schemes. Scene analysis schemes generally consist of two phases: a training phase and an estimation phase. In the training phase the location is mapped, usually via fingerprinting, and in the estimation phase a mobile node gathers its own measurements which are then compared to the fingerprints. There are many methods for doing this comparison, which we will discuss in the next section. While scene analysis schemes are not without their own overhead, they are far preferable to both triangulation schemes and proximity schemes for Honeycomb's intended uses. For these reasons, we chose a scene analysis scheme, which we will describe further here.
 	
 
-\section{Deterministic and Probabilistic Approaches}
-\index{Deterministic and Probabilistic Approaches@\emph{Deterministic and Probabilistic Approaches}}%
+\section{Scene Analysis Scheme Approaches}
+\index{Scene Anaylsis Scheme Approaches@\emph{Scene Anaylsis Scheme Approaches}}%
 
-Scene analysis schemes can be generally divided into two categories: probabilistic and deterministic approaches. 
+While all scene analysis schemes involve a training phase and an estimation phase, the particulars of these phases can vary. Most approaches, including all of those cited in this section, employ fingerprinting in the training phase, but vary dramatically in the estimation phase. There are three basic approaches to the estimation phase in this scheme, as described by \cite{turner2011empirical}: probabilistic matching, Bayesian networks, and nearest neighbor. 
+
+\subsection{Probabilistic Matching} Probabilistic approaches take a user track measurement and calculates the probability that the measurement was taken at each of the fingerprinted points in the space. These approaches requires complex calculations for determining probability, but do not generally perform better at location estimation than other approaches\cite{hotta2012robust}.
+
+\subsection{Bayesian Networks} Bayesian network approaches \cite{ito2005bayesian} \cite{seshadri2005bayesian} are a special subset of probabilistic approaches. They attempt to build a probability model in the training phase, and estimate the evolving state of the system based on that model and the previous state estimate. These approaches can be among the most accurate, but require a trade off for computational overhead. While these approaches are quite promising, we fear that the computational overhead will present problems when run at a large scale, and therefore have chosen not to employ them at this time. 
 
 
+\subsection{Nearest Neighbors} Nearest neighbor methods \cite{quan2010wi} \cite{nagaosa2012dept} are the simplest approaches, and provide an acceptable level of accuracy for Honeycomb. In nearest neighbor approaches, the estimation phase implements a heuristic, often Euclidean distance (Figure \ref{euclideandistance}), is applied to the gathered signal strength measurements, and the fingerprint which most closely matches the gathered measurement is considered to be the location of the mobile node. While nearest neighbor approaches are subject to the Wi-Fi signal multipath problem, the fact that each estimate does not rely on the state of the estimate before it means quick recovery in cases of error. Additionally, accuracy of estimations can be greatly influenced by density of fingerprints. 
 
-
-Both types can require a map as a training phase, but Probabilistic approaches often require knowledge of location of access points. 
-Probabalistic Approaches are more computationally intensive
-Most approaches require division of the space into equal cells, but mine doesn't. You can put the points anywhere you want them for the amount of accuracy you want. 
-
-Probabilistic:
-\cite{ito2005bayesian}
-\cite{seshadri2005bayesian}
-\cite{hotta2012robust}
-
-Deterministic:
-\cite{arias2004malguki}
-\cite{quan2010wi}
-\cite{nagaosa2012dept}
-
-Unsure, but need to cite:
-\cite{priyantha2005cricket}
-\cite{xiong2012towards}
-\cite{xiong2013arraytrack}
-\cite{bahl2000enhancements}
-\cite{bahl2000radar}
-\cite{turner2011empirical}
-
- 
- 
-\section{Fingerprinting}
-\index{Fingerprinting@\emph{Fingerprinting}}%
-
-Define again.
-Why choose this method?
-something here about density of fingerprints
-Benefits and drawbacks:
-	fingerprinting requires a map
-	algorithmic determinations require knowledge of distances between access points, which is harder to get than a fingerprint map, and is not as forgiving of signals bouncing off stuff
 
 \section{Offline Location Estimation}
-\index{Existing Research@\emph{Existing Research}}%\
+\index{Offline Location Estimation@\emph{Offline Location Estimation}}%\
 
-As opposed to real time
-offline is more secure (and less creepy) 
-
+Some location estimation systems perform real time user tracking \cite{bahl2000enhancements} \cite{bahl2000radar} \cite{ito2005bayesian}. These real time tracking algorithms generally fall into two categories: those in which the location estimation is done on the mobile device itself, and those in which it is not. Systems which perform the location estimation somewhere other than the mobile device require direct communication with the device in order to gather real time data. As stated previously, these approaches were rejected due to privacy and security concerns. While approaches in which the estimation is done on the mobile device avoid these concerns, they violate Honeycomb's goal of staying decoupled from the user track data gathering mechanism. Additionally, by performing calculations on a central server, battery and computational power of mobile devices is conserved. 
 
 
+\section{The Honeycomb Approach}
+\index{The Honeycomb Approac@\emph{The Honeycomb Approac}}%\
 
+Following the decisions made in this chapter, the Honeycomb approach to indoor location estimation is a scene analysis scheme with a nearest neighbor approach. For the training phase, Honeycomb includes an Android mobile application capable of fingerprinting a space for signal strength measurements from a given set of BSSIDs. It then uploads those measurements as raw data to a web server. The number and density of fingerprints taken can be determined by the site administrator based on desired accuracy of location estimates. For the estimation phase, Honeycomb decouples itself from the actual user track gathering tool, but exposes an API for timestamped user tracks to be uploaded. It then runs a Euclidean distance algorithm (Figure \ref{euclideandistance}) to determine which fingerprint the user track was nearest to for each timestamp, and thus achieves continuous location estimation for the duration of the user track. 
 
-Overview:
-\cite{liu2007survey}
-	Three typical location estimation schemes: triangulation, scene analysis, and proximity
-	
-	Triangulation:
-		requires knowledge of location of access points, which is more complicated and less "plug and play". 
-		Relies on Time Of Arrival or Roundtrip Time Of Flight
-		Requires Line Of Sight
-		Suffers from the multipath effect, due to reflection of signals
-		Much more computationally intensive.
-		
-	Scene Analysis
-		requires knowledge of the scene (fingerprinting)
-		two phases: training and estimation (actually calls them "offline" and "online" but eff that)
-		"There are at least five location fingerprinting-based positioning algorithms using pattern recognition technique so far: probabilistic methods, Formula-nearest-neighbor (Formula NN), neural networks, support vector machine (SVM), and smallest M-vertex polygon (SMP)."
-		For probabilistic methods, see below
-		
-	Proximity:
-		dense grid of antennas, mobile node is collocated with the one that detects it
-
-
-
-\cite{ito2005bayesian}
-	probabilistic in nature
-	estimation is done on the device, specifically to keep the data out of the hands of third parties. (not suitable for our purposes)
-	uses pre-observation
-	
-	
-\cite{seshadri2005bayesian}
-	training phase and estimation phase
-	requires training by making a map of wifi signal strenghts throughout the space (just like mine)
-	more computationally intensive
-	
-
-
-\cite{hotta2012robust}
-
-
-\cite{arias2004malguki}
-\cite{quan2010wi}
-\cite{nagaosa2012dept}
-
-
-\cite{priyantha2005cricket}
-\cite{xiong2012towards}
-\cite{xiong2013arraytrack}
-\cite{bahl2000enhancements}
-\cite{bahl2000radar}
-\cite{turner2011empirical}
-
-
-	
-	
+\begin{figure}[htb] % Imported eps example.
+	\begin{center}
+		\ \[ \sqrt{(FP_{1} - UT_{1})^2 + (FP_{2} - UT_{2})^2 + ... + (FP_{n} - UT_{n})^2} \]
+		\caption{The Euclidean distance algorithm between a fingerprint (FP) and a user track (UT) with N signal strength measurements.}
+		\label{euclideandistance}
+	\end{center}
+\end{figure}
