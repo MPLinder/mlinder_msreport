@@ -41,7 +41,7 @@ Some location estimation systems perform real time user tracking \cite{bahl2000e
 
 Following the decisions made in this chapter, the Honeycomb approach to indoor location estimation is a scene analysis scheme with a nearest neighbor approach. For the training phase, Honeycomb includes an Android mobile application capable of fingerprinting a space for signal strength measurements from a given set of BSSIDs. It then uploads those measurements as raw data to a web server. The number and density of fingerprints taken can be determined by the site administrator based on desired accuracy of location estimates. For the estimation phase, Honeycomb decouples itself from the actual user track gathering tool, but exposes an API for timestamped user tracks to be uploaded. It then runs a Euclidean distance algorithm (Figure \ref{euclideandistance}) to determine which fingerprint the user track was nearest to for each timestamp, and thus achieves continuous location estimation for the duration of the user track. 
 
-\begin{figure}[htb] % Imported eps example.
+\begin{figure}[htb] 
 	\begin{center}
 		\ \[ \sqrt{(FP_{1} - UT_{1})^2 + (FP_{2} - UT_{2})^2 + ... + (FP_{n} - UT_{n})^2} \]
 		\caption{The Euclidean distance algorithm between a fingerprint (FP) and a user track (UT) with N signal strength measurements.}

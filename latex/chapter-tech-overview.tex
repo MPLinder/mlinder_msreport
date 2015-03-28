@@ -3,16 +3,85 @@
 \index{Tech Overview%
 @\emph{Tech Overview}}%
 
-\section{Components}
-\index{Components@\emph{Components}}%
-
-\section{Technologies}
-\index{Technologies@\emph{Technologies}}%
-
-\section{Architecture}
-\index{Architecture@\emph{Architecture}}%
+In order to perform both the training phase and the estimation phase of Honeycomb's scene analysis approach to location estimation, as well as post estimation data analysis, we implemented an mobile application as well as a web application. We employed a basic client-server architecture in which the web application acts as the server, with both the mobile application and the BumbleBee Gatekeeper as its clients. In this section, we describe the technical details of these applications.
 
 
-Something about averaging measurements to get the fingerprint
-	and how the mobile app can be adjusted for poll frequency and length
-Something about euclidean distance algorithm
+\section{Web Application}
+\index{Web Application@\emph{Web Application}}%
+
+
+The most critical part of Honeycomb's implementation is the web application. It acts as the server in Honeycomb's client-server architecture, and is the place where Honeycomb performs its location estimation calculations. It also servers as the entry point into Honeycomb for site administrators to administer their sites and view user tracks. It is implemented in the Python programming language using the Django web framework \cite{django}, and is hosted on WebFaction \cite{webfaction}. It is available at https://www.honeycomb.pw \footnote{This URL will immediately prompt you to login. Please contact the author for demo credentials.}
+
+
+\subsection{User Interface}
+\index{User Interface@\emph{User Interface}}%
+
+
+The user interface of the Honeycomb web application is designed to support location administrators, and is designed using the Bootstrap CSS and Javascript framework \cite{bootstrap}. Once logged in to the application, location administrators can view the locations that they administer, as well as create new locations. By allowing a single user to administer multiple locations in this manner, we support a user's ability to own the location estimation deployment at multiple sites. Locations created through this interface will be exposed via the API (described in more detail later) for use in the location estimation phases. They can also view the currently active as well as past fingerprint sessions, including the raw signal strengths measurements for each fingerprint in the session. Additionally, individual user tracks can be viewed, including both the raw signal strength measurements of the track as well as a table showing each timestamp offset and the estimated location of the user at that time. 
+	
+
+\subsection{REST API}
+\index{REST API@\emph{REST API}}%
+
+
+Honeycomb's API is its programmatic interface with the clients in the client-server architecture. It is built using Representational State Transfer (REST) principles \cite{fielding2002principled}, and the JSON data format \cite{json}, both of which are standard for programmatic interfaces today. It exposes four endpoints in order to facilitate location estimate, which are described below.
+
+
+\paragraph{Tokens}
+\index{Tokens@\emph{Tokens}}%
+
+The Honeycomb API authentication mechanism is token based. The token endpoint accepts a set of user credentials and returns a token, which can be used to interact with the rest of the API. This is the only endpoint that accepts a user's credentials, all others use the provided token for authentication. The benefit of this authentication mechanism is that the end user must only input their credentials once, and the client application does not need to store those credentials. This provides the user with a measure of security, as their credentials cannot be stolen if they are not stored. Should the client experience a breach of security of the given token, that token can be revoked on the server without user intervention, and does not require the user to change their password. 
+
+
+\paragraph{Locations}
+\index{Locations@\emph{Locations}}%
+
+The location endpoint provides a list of locations administered by the owner of the provided authentication token. Honeycomb allows a single user to administer multiple locations, and exposing those locations in this endpoint allows clients to present the user with a selection of locations that they administer when relevant. This means that a single user can use the same Honeycomb mobile application, and even the same BumbleBee Gatekeeper application at multiple sites, while still maintaining the integrity of the data gathered at each site. 
+
+
+\paragraph{Fingerprint Sessions}
+\index{Fingerprint Sessions@\emph{Fingerprint Sessions}}%
+
+The fingerprint session endpoint provides clients with an interface through which to upload a full fingerprint session, including multiple signal strength measurements for each fingerprint at the given location. In order to successfully create a new fingerprint session, the provided authentication token must represent the administrator of the provided site. 
+
+The fingerprint session endpoint does not support updating of a single fingerprint's signal strength measurements. Instead, fingerprints uploaded to this endpoint are considered to be the full set of fingerprints for a session. This decision was made because any change to a given fingerprints measurements likely propagated to other fingerprints as well. For instance, if a new display was set up somewhere in the store, it likely changed the distribution of signal strengths throughout the space. Therefore, if the site administrator wants to add a fingerprint at the new display, they must re-fingerprint the entire space. Every session uploaded through this endpoint is considered to be the latest fingerprint session for the given site, and is therefore marked as the active session, and all other session are marked as inactive. Thus, all user tracks uploaded are compared against the most recent fingerprint session uploaded.
+
+
+\paragraph{User Tracks}
+\index{User Tracks@\emph{User Tracks}}%
+
+The user track endpoint provides clients with an interface through which to upload user tracks, including timestamped signal strength measurements and any identifying information about the user that the client wishes to provide. In order to successfully create a user track, the provided authentication token must represent the administrator of the provided site. Although BumbleBee is used in this paper as the user track client, Honeycomb will accept data from any source, provided that the client provides the appropriate authentication token. Tracks uploaded in this way are stored in the database and queued for asynchronous processing, as described below.
+
+		
+\subsection{Asynchronous Processing}
+\index{Asynchronous Processing@\emph{Asynchronous Processing}}%
+
+
+Honeycomb's algorithms involve some measure of complex processing. In order to prevent this complex processing from causing a bottleneck in the HTTP request/response cycle during API requests, and thus to ensure scalability of the application, Honeycomb employs a system of asynchronous processes. These asynchronous processes use Celery \cite{celery} as an asynchronous task manager and Redis \cite{redis} as a message queue. Thus, the Honeycomb API accepts raw data through its endpoints, stores it in a PostgreSQL \cite{postgresql} database, adds a message to Redis, and returns a response to the client immediately. At some point after the response is returned (usually almost immediately, but potentially some larger amount of time), Celery dequeues the message from Redis and invokes the appropriate asynchronous task. The task processes the raw data and stores the resulting data in the database. The two main asynchronous tasks are described below.
+
+
+\paragraph{Asynchronous Fingerprint Processing}
+
+
+Honeycomb's API supports the uploading of fingerprints with multiple signal strength measurements for each Wi-Fi access point. The purpose for this is to gather multiple signal strength measurements over time in order to avoid abnormally large or small instantaneous values. This raw data is stored as-is, by the API endpoint. The asynchronous process then calculates the mean of the measurements \cite{turner2011empirical} and stores those in the database as well. It is against these processed values that the user tracks are compared.
+
+
+\paragraph{Asynchronous User Track Processing}
+
+
+When Honeycomb's API receives a user track, it stores the data as-is in the database. The asynchronous task then performs the Euclidean distance algorithm (Figure \ref{euclideandistance}) against the user track and the currently active fingerprint, and stores the result in the database. When a site administrator views a user track, this calculation has already been performed, and can thus be rendered efficiently.
+	
+
+\section{Mobile Application}
+\index{Mobile Application@\emph{Mobile Application}}%
+
+Honeycomb's training phase is implemented as an Android application in the Java programming language. Upon first opening the application, the user is prompted to log in with their Honeycomb credentials. The mobile application then makes use of the Honeycomb token API endpoint, and exchanges the supplied credentials for a token, which is caches locally. It then immediately queries the location endpoint and presents the user with a list of administered locations so that the user can choose which location it is about to fingerprint. 
+
+Once the user is logged in and a location is chosen, the user is presented with a form in which to input a list of BSSIDs of Wi-Fi access points to poll for during each fingerprint. Then, the user must physically locate themselves at each of the desired polling points. For each point, the user is prompted to input a description of the point for later identification. The mobile app then performs the requested polling, and the user can move on to the next point. Once fingerprint is complete, the application uploads the full session to the fingerprint session API endpoint, along with the user's authentication token and the site identifier provided by the location endpoint. At his point, the training phase is complete. At any point in the future, the user can perform the entire process again in order to create an updated fingerprint session.
+
+
+\section{BumbleBee plugin}
+\index{BumbleBee plugin@\emph{BumbleBee plugin}}%
+
+
+As stated earlier, in order to prove Honeycomb's viability as a location estimation product, we employed BumbleBee as a user track gathering mechanism. We leveraged BumbleBee's plugin architecture, and wrote a Honeycomb specific plugin for uploading user tracks. Like the Honeycomb mobile app, this plugin prompts the user for their Honeycomb credentials and exchanges these credentials for a token. It then uses this token to gather the user's administered locations and prompts the user to select the location for which they are gathering user tracks. It then uploads user tracks in bulk to the Honeycomb API, where Honeycomb can then process the data.
