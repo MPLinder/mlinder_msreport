@@ -9,7 +9,7 @@ Because one of Honeycomb's goals is to decouple the user track gathering mechani
 \section{Infrastructure}
 \index{Infrastructure@\emph{Infrastructure}}%
 
-Bumblebees major contribution is its novel infrastructure (Figure \ref{bumblebeearch}), in which there exists a Wi-Fi network host, the “Gatekeeper”, at the store entrance. As mobile devices, the “bumblebees”, enter the store, they connect to the Gatekeeper and request work. The Gatekeeper provides the bumblebee the BSSIDs addresses of N Wi-Fi access points located throughout the store, where N is the number of different access points from which the Gatekeeper wants signal strength measurements. When the bumblebee leaves the store, and detects that it is once again in range of the Gatekeeper, it makes another connection to the Gatekeeper and hands over its data. Employing the Gatekeeper as data sink allows the bumblebee to drop its collected data off and free its memory. The Gatekeeper can then aggregate the data and deliver it to the site specific location estimator, allowing both the bumblebees and the Gatekeeper to be agnostic of the location estimation method.
+Bumblebee's major contribution is its novel infrastructure (Figure \ref{bumblebeearch}), in which there exists a Wi-Fi network host, the “Gatekeeper”, at the store entrance. As mobile devices, the “bumblebees”, enter the store, they connect to the Gatekeeper and request work. The Gatekeeper provides the bumblebee the BSSIDs of N Wi-Fi access points located throughout the store, where N is the number of different access points from which the Gatekeeper wants signal strength measurements. When the bumblebee leaves the store, and detects that it is once again in range of the Gatekeeper, it makes another connection to the Gatekeeper and hands over its data. Employing the Gatekeeper as data sink allows the bumblebee to drop its collected data off and free its memory. The Gatekeeper can then aggregate the data and deliver it to the site specific location estimator, allowing both the bumblebees and the Gatekeeper to be agnostic of the location estimation method.
 
 We believe that the real novelty of BumbleBee lies in the introduction of the Gatekeeper. Serving dual roles, both as distributor of work and as data sink, the Gatekeeper is the driving force in the system. Because bumblebees are mobile and the Gatekeeper is not, employing the Gatekeeper as the distributor of work allows for site specific configurations, and allows the bumblebee to easily move into and out of various deployments without any a priori knowledge of the site specific deployment save for the identity of the Gatekeeper.
 
@@ -17,7 +17,7 @@ We believe that the real novelty of BumbleBee lies in the introduction of the Ga
 \begin{figure}[htb] % Imported eps example.
 	\begin{center}
 		\ \includegraphics[width=4in,height=3in]{BumbleBeeExample.png}
-		\caption{BumbleBee Architecture}
+		\caption{BumbleBee Infrastructure}
 		\label{bumblebeearch}
 	\end{center}
 \end{figure}
@@ -30,7 +30,7 @@ We believe that the real novelty of BumbleBee lies in the introduction of the Ga
 \subsection{The Gatekeeper}
 \index{Gatekeeper@\emph{Gatekeeper}}%
 
-The gatekeeper is implemented in the Python programming language so that it can remain relatively platform independent. It is comprised of three main components: the gatekeeper network service, a GUI, and a plugin interface to allow extending the systems functionality. We have implemented plugins for saving/restoring results to/from disk, graphing received signal strength from all BSSIDs across time, logging, and exporting results to a portable format for use outside BumbleBee. As part of the Honeycomb project, we also implemented a Gatekeeper plugin for uploading user tracks to the Honeycomb API. The Gatekeeper server listens on a fixed TCP port (0xb33) for requests from clients through remote procedure calls (via Python’s SimpleXMLRPCServer). Information exchange with the bumblebees is done in JSON \cite{json} data format. The gatekeeper administrator configures the BSSIDs addresses and minimum polling interval.
+The gatekeeper is implemented in the Python programming language so that it can remain relatively platform independent. It is comprised of three main components: the gatekeeper network service, a GUI, and a plugin interface to allow extending the systems functionality. We have implemented plugins for saving/restoring results to/from disk, graphing received signal strengths from all BSSIDs across time, logging, and exporting results to a portable format for use outside BumbleBee. As part of the Honeycomb project, we also implemented a Gatekeeper plugin for uploading user tracks to the Honeycomb API. The Gatekeeper server listens on a fixed TCP port (0xb33) for requests from clients through remote procedure calls (via Python's SimpleXMLRPCServer). Information exchange with the bumblebees is done in JSON \cite{json} data format. The gatekeeper administrator configures the BSSIDs and minimum polling interval.
 
 
 \subsection{The Bumblebee}
