@@ -1,16 +1,13 @@
-\chapter{Discussion}
+\chapter{Conclusions and Future Work}
 \label{discussion}
-\index{Discussion%
-	@\emph{Discussion}}%
+\index{Conclusions and Future Work%
+	@\emph{Conclusions and Future Work}}%
 
-\section{Interpretation of Results}
-\index{Interpretation of Results@\emph{Interpretation of Results}}%
 
-something about fingerprint density
+While our results do not show perfect location tracking of a user, we believe that they do make it clear that Honeycomb is a viable product for indoor location estimation, provided an adequate number of access points and fingerprint polling time. However, in performing our tests we discovered that fingerprinting itself can be a painful process, particularly with longer poll times. One way to alleviate this pain is to decrease fingerprint density in such a way that supports only the minimum viable precision necessary at a given location. Thus, fingerprint density becomes a knob that one can turn to fine tune an individual deployment of Honeycomb, and must be decided on a case by case basis. 
 
-\section{Future Work}
-\index{Future Work@\emph{Future Work}}%
+While this paper has proven Honeycomb's effectiveness as a product, there are still many things that must be done in order to make Honeycomb market ready. Most importantly, the user interfaces need significant work, particularly the web interface for viewing a user track, which is currently a table of timestamps and fingerprints. The result maps in this paper were created manually, but a programmatic rendering of these maps in the web interface would be preferable. 
 
-Do more with the track data instead of just viewing individual tracks
-better user interface
-more security
+Additionally, the web interface currently only has the ability to view each user track individually. In order to make this information useful, an aggregating a reporting function is needed which can provide information about trends in user tracks rather than data about any specific track. With this information, a site administrator could more effectively manage their space in order to maximize visibility and flow. 
+
+However, despite shortcoming in user interfaces, we believe that Honeycomb's current incarnation represents the backbone of a viable location estimation product, and that with only relatively minor adjustments could potentially be employed in real world scenarios. 
