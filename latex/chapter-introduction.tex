@@ -35,7 +35,7 @@ While the concept of the Wi-Fi fingerprint is relatively common, here we introdu
 
 
 \paragraph{User Track}
-A user track differs from a fingerprint in that it represents a single user's movement through the space. Thus, a user track is composed of a set of timestamps, each of which is associated with a set of signal strength measurements for each of the access points in the space. Figure \ref{usertrackexample} shows an example of a user track. In this example, the small dots represent the user's actual path through the space, while each large dot represents a timestamped set of signal strength measurements. Thus it can be seen that in this example that the user walked at a relatively constant pace through the space, slowing down four times near locations 5, 7, 14, and 17. For location estimation purposes, Honeycomb will compare a given user track to the most recent fingerprint session for the given space. 
+A user track differs from a fingerprint in that it represents a single user's movement through the space. Thus, a user track is composed of a set of timestamps, each of which is associated with a set of signal strength measurements for each of the access points in the space. Figure \ref{usertrackexample} shows an example of a user track. In this example, the small dots represent the user's actual path through the space, while each large dot represents a timestamped set of signal strength measurements. Thus it can be seen that in this example the user walked at a relatively constant pace through the space, slowing down four times near locations 5, 7, 14, and 17. For location estimation purposes, Honeycomb will compare a given user track to the most recent fingerprint session for the given space. 
 
 
 \begin{figure}[htb] % Imported eps example.
@@ -52,13 +52,13 @@ A user track differs from a fingerprint in that it represents a single user's mo
 
 Wi-Fi based location estimation is a well researched topic \cite{liu2007survey}. The goal of Honeycomb is to leverage that research and build an indoor location tracking system which is suitable for deployment in a real world scenario.  As such, Honeycomb includes an Android application capable of fingerprinting a space, and an API which is deployed to the web for uploading both fingerprints and user track data. The web application also executes the location estimation algorithm, and provides a user interface for browsing the user track data. Honeycomb itself remains agnostic of the mechanism used to gather the user's Wi-Fi signal strength data. By decoupling Honeycomb in this way, we allow Honeycomb to be used in multiple scenarios in which a specialized user track gathering mechanism is desired. 
 
-User privacy is also a major motivating factor in our work. By only performing location estimation based on signal strength and timestamp data passively gathered on the Wi-Fi capable device, we have avoided the pitfalls of systems that require the mobile device to send out a beacon \cite{ito2005bayesian} \cite{xiong2012towards} which can be intercepted by malicious third parties. Additionally, the offline nature of the location estimation algorithm greatly simplifies the entire process, as real time location estimation is still a highly volatile field \cite{turner2011empirical}. It also helps provide an additional layer of privacy protection for the user, as the data can easily be decoupled from any identifying information before processing.
+User privacy is also a major motivating factor in our work. By only performing location estimation based on signal strength and timestamp data passively gathered on the Wi-Fi capable device, we have avoided the pitfalls of systems that require the mobile device to send out a beacon \cite{ito2005bayesian} \cite{xiong2012towards} which can be intercepted by malicious third parties. Additionally, the offline nature of the location estimation algorithm greatly simplifies the entire process, as real time location estimation is still a highly volatile field \cite{turner2011empirical}. It also helps provide an additional layer of privacy protection for the user, as the data can easily be decoupled from any identifying information before processing. There are, of course, motivations for real time trackers as well, which Honeycomb does not address.
  
  
 \section{Contribution}
 \index{Contribution@\emph{Contribution}}%
 
-While there has been much research done in the space, to the author's knowledge, there does not yet exist a product on the market that achieves true location estimation via Wi-Fi signal strength measurements. Honeycomb is such a product. Honeycomb provides tools on the web for site administrators to manage their locations and view individual user tracks. It also includes an API through which fingerprints and user tracks can be uploaded, and an Android application capable of doing the fingerprinting and uploading the results to Honeycomb through the API. 
+While there has been much research done in the space (see chapter \ref{related}), to the author's knowledge, there does not yet exist a product on the market that achieves true location estimation via Wi-Fi signal strength measurements. Honeycomb is such a product. Honeycomb provides tools on the web for site administrators to manage their locations and view individual user tracks. It also includes an API through which fingerprints and user tracks can be uploaded, and an Android application capable of doing the fingerprinting and uploading the results to Honeycomb through the API. 
 
 
 \section{User Stories}
@@ -71,7 +71,7 @@ The canonical example, and the one to which we will refer throughout this paper,
 
 \paragraph{Visibility}
 
-High visibility of products is a valuable commodity in any retain environment. Each store can use aggregate data about its customers movement through the space to identify key, high traffic areas, and sell shelf space or ad space accordingly. Additionally, \cite{shukla2013effects} shows that customers respond to engaging store layouts, which can be facilitated by customer movement data. Similarly, a conference can identify high traffic areas and place sponsor ads, or other information valuable to attendees, at the site.
+High visibility of products is a valuable commodity in any retail environment. Each store can use aggregate data about its customers' movements through the space to identify key, high traffic areas, and sell shelf space or ad space accordingly. Additionally, \cite{shukla2013effects} shows that customers respond to engaging store layouts, which can be facilitated by customer movement data. Similarly, a conference can identify high traffic areas and place sponsor ads, or other information valuable to attendees, at the site.
 
 \paragraph{Flow Control}
 
